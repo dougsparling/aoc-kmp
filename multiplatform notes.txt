@@ -2,4 +2,19 @@ multiplatform notes:
 - hot code replace didn't work
 - iOS kinda painful, but maybe if regularly developing with XCode you wouldn't hit it 
 - unicode strings mangled on web
-- 
+- 20-30GB of shit to download: gradle, xcode, dependencies, simulators, etc.
+- String.format and other foundational stdlib just missing, lol
+- can call Kotlin from Swift, works with a horrific Obj-C header?
+- the other way is horrific unless you're calling some well-known set of swift built-ins
+- docs and ability to find answers online generally not very good
+- calling across swift/kotlin boundary incurs a significant cost
+- Web JS interop is... weird. Kotlin can provide types ala typescript
+- don't get string resources out of the box... annoying, but just create strings.xml
+
+issues:
+
+jetbrains seems to be re-implementing android stuff in multiplatform, e.g.:
+implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
+
+and following android-specific instructions often leads to ruin, e.g. can't use navigation from jetpack
+

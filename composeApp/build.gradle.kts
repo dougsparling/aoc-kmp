@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 kotlin {
@@ -68,10 +69,16 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+        }
+        wasmJsMain.dependencies {
+            implementation(npm("crypto-js", "4.2.0"))
         }
     }
 }
@@ -117,4 +124,9 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+compose.resources {
+    publicResClass = true
+    generateResClass = auto
 }
