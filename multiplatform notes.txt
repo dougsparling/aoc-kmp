@@ -1,0 +1,5 @@
+multiplatform notes:
+- hot code replace didn't work
+- iOS kinda painful, but maybe if regularly developing with XCode you wouldn't hit it 
+- unicode strings mangled on web
+- 
