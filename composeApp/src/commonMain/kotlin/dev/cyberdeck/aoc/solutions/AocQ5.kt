@@ -1,7 +1,6 @@
 package dev.cyberdeck.aoc.solutions
 
 import adventofcode.composeapp.generated.resources.Res
-import adventofcode.composeapp.generated.resources.allStringResources
 import adventofcode.composeapp.generated.resources.h4x0r
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -28,20 +27,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.Dispatchers
+import dev.cyberdeck.aoc.getPlatform
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.coroutines.CoroutineContext
 import kotlin.random.Random
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -54,7 +51,7 @@ fun AocQ5() {
 
     LaunchedEffect(doorId) {
         doorId.takeIf { it.isNotBlank() } ?: return@LaunchedEffect
-        withContext(Dispatchers.Compute) {
+        withContext(getPlatform().background) {
             val length = 10
             startSolver(
                 doorId,
@@ -145,7 +142,7 @@ fun startSolver(input: String, difficulty: Int, length: Int): Flow<Pair<String, 
     while (wip.length < length) {
         val key = input + seq
         val hash = key.md5()
-        if (hash.startsWith("00000")) {
+        if (hash.startsWith(prefix)) {
             wip += hash[5]
             emit(wip to hash)
         } else if (seq % 100000 == 0) {
@@ -155,9 +152,7 @@ fun startSolver(input: String, difficulty: Int, length: Int): Flow<Pair<String, 
     }
 }
 
+fun String.md5() = getPlatform().md5(this)
+
 @OptIn(ExperimentalUnsignedTypes::class, ExperimentalStdlibApi::class)
 fun ByteArray.hex() = this.toUByteArray().toHexString()
-
-expect fun String.md5(): String
-
-expect val Dispatchers.Compute: CoroutineContext
