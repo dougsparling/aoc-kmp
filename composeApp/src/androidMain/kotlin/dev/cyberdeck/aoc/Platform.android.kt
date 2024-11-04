@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import java.security.MessageDigest
 import kotlin.coroutines.CoroutineContext
 
-private val md5 = MessageDigest.getInstance("MD5") 
+private val md5 = MessageDigest.getInstance("MD5")
 
 class AndroidPlatform : Platform {
     override val name: String = "Android ${Build.VERSION.SDK_INT}"

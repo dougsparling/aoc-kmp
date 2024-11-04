@@ -13,11 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,38 +43,78 @@ import kotlin.random.Random
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AocQ5() {
-    var entry by remember { mutableStateOf("") }
-    var doorId by remember { mutableStateOf("") }
-    var solution by remember { mutableStateOf("") }
-    var log by remember { mutableStateOf(listOf<String>()) }
+    var difficulty by remember { mutableStateOf(5) }
+    var length by remember { mutableStateOf(8) }
 
-    LaunchedEffect(doorId) {
-        doorId.takeIf { it.isNotBlank() } ?: return@LaunchedEffect
-        withContext(getPlatform().background) {
-            val length = 10
-            startSolver(
-                doorId,
-                difficulty = 7,
-                length = length
-            ).collect { (pwd, hash) ->
-                solution = pwd + Random.nextBytes(8).hex().take(length - pwd.length)
-                log = log + hash
-                if (log.size > 10) {
-                    log = log.drop(1)
+    AocScaffold(
+        problem = 5,
+        defaultTheme = Theme.L33T,
+        extraActions = {
+            var showingLengthDialog by remember { mutableStateOf(false) }
+            IconButton(onClick = { showingLengthDialog = true }) {
+                Text("🍆")
+            }
+
+            var showingDifficultyDialog by remember { mutableStateOf(false) }
+            IconButton(onClick = { showingDifficultyDialog = true }) {
+                Text("☠️")
+            }
+
+            if (showingLengthDialog) {
+                UserInputDialog(
+                    dialogTitle = "Password length (1-20)",
+                    onInput = { str ->
+                        str.toIntOrNull()?.takeIf { it in 1..20 }?.let {
+                            length = it
+                            showingLengthDialog = false
+                        }
+                    },
+                    onDismissRequest = { showingLengthDialog = false }
+                )
+            }
+
+            if (showingDifficultyDialog) {
+                UserInputDialog(
+                    dialogTitle = "Password cracking difficulty (1-15)",
+                    onInput = { str ->
+                        str.toIntOrNull()?.takeIf { it in 1..15 }?.let {
+                            difficulty = it
+                            showingDifficultyDialog = false
+                        }
+                    },
+                    onDismissRequest = { showingDifficultyDialog = false }
+                )
+            }
+        }
+    ) { padding ->
+        var entry by remember { mutableStateOf("") }
+        var doorId by remember { mutableStateOf("") }
+        var solution by remember { mutableStateOf("") }
+
+        var log by remember { mutableStateOf(listOf<String>()) }
+
+        LaunchedEffect(doorId, length, difficulty) {
+            doorId.takeIf { it.isNotBlank() } ?: return@LaunchedEffect
+            withContext(getPlatform().background) {
+                startSolver(
+                    doorId,
+                    difficulty = difficulty,
+                    length = length
+                ).collect { (pwd, hash) ->
+                    solution =
+                        pwd + Random.nextBytes((length + 1) / 2).hex().take(length - pwd.length)
+                    log = log + hash
+                    if (log.size > 10) {
+                        log = log.drop(1)
+                    }
                 }
             }
         }
-    }
 
-    MaterialTheme(
-        colors = MaterialTheme.colors.copy(
-            primary = Color.Green,
-        ),
-        typography = Typography(defaultFontFamily = FontFamily.Monospace)
-    ) {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(padding)
                 .background(color = Color.Black)
         ) {
             Column(
@@ -93,7 +132,10 @@ fun AocQ5() {
                         doorId = entry
                     }
                 ) {
-                    Text(text = stringResource(Res.string.h4x0r))
+                    Text(
+                        color = LocalContentColor.current,
+                        text = stringResource(Res.string.h4x0r)
+                    )
                 }
 
                 FlowRow {
