@@ -10,6 +10,10 @@ multiplatform notes:
 - calling across swift/kotlin boundary incurs a significant cost
 - Web JS interop is... weird. Kotlin can provide types ala typescript
 - don't get string resources out of the box... annoying, but just create strings.xml
+  - actually all resource types are much more annoying to deal with than their android equivalents
+  
+- easy to end up duplicating code between android and desktop (both java-based)
+- 
 
 issues:
 

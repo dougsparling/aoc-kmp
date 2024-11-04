@@ -85,12 +85,15 @@ private fun ThemedContent(
             MaterialTheme(
                 colors = MaterialTheme.colors.copy(
                     primary = Color.Green,
+                    primaryVariant = Color.Yellow,
                     onSecondary = Color.Yellow,
                     onSurface = Color.Red,
                     onPrimary = Color.Black,
                     secondary = Color.Black,
+                    secondaryVariant = Color.DarkGray,
                     surface = Color.Black,
                     background = Color.Black,
+                    onBackground = Color.White,
                     isLight = false
                 ),
                 typography = Typography(defaultFontFamily = FontFamily.Monospace)
