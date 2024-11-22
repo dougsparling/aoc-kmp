@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.cyberdeck.aoc.solutions.AocQ5
 import dev.cyberdeck.aoc.solutions.AocQ6
+import dev.cyberdeck.aoc.solutions.AocQ7
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 val LocalNav = compositionLocalOf<NavController> { error("must provide NavController") }
@@ -39,6 +40,9 @@ fun App() {
                 composable<AocQ6> {
                     AocQ6()
                 }
+                composable<AocQ7> {
+                    AocQ7()
+                }
             }
         }
     }
@@ -50,7 +54,8 @@ fun HomeScreen() {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         listOf(
             "Question 5" to AocQ5,
-            "Question 6" to AocQ6
+            "Question 6" to AocQ6,
+            "Question 7" to AocQ7
         ).forEach { (label, screen) ->
             Button(onClick = { nav.navigate(screen) }) {
                 Text(label)

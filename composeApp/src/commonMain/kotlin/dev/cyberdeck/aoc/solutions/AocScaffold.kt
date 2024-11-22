@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.VisualTransformation
 import dev.cyberdeck.aoc.LocalNav
 
 enum class Theme { Default, L33T }

@@ -6,19 +6,25 @@ multiplatform notes:
 - String.format and other foundational stdlib just missing, lol
 - can call Kotlin from Swift, works with a horrific Obj-C header?
 - the other way is horrific unless you're calling some well-known set of swift built-ins
+  - have to wrap third-party libraries with expect/actual
 - docs and ability to find answers online generally not very good
+  - half of my search results come from a google crawl of Kotlin's community slack 
 - calling across swift/kotlin boundary incurs a significant cost
 - Web JS interop is... weird. Kotlin can provide types ala typescript
 - don't get string resources out of the box... annoying, but just create strings.xml
   - actually all resource types are much more annoying to deal with than their android equivalents
   
 - easy to end up duplicating code between android and desktop (both java-based)
+ - maybe you can setup a module to be shared by both, but... extra complexity
 - 
 
 issues:
 
-jetbrains seems to be re-implementing android stuff in multiplatform, e.g.:
-implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
+tension between what jetbrains is trying to do and Google, so they seem to be re-implementing android stuff in multiplatform, e.g.:
+  
+  implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
 
 and following android-specific instructions often leads to ruin, e.g. can't use navigation from jetpack
+- similar results with AI tools -- code that simply does not work
+
 

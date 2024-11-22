@@ -12,3 +12,6 @@ object AocQ5: Route
 
 @Serializable
 object AocQ6: Route
+
+@Serializable
+object AocQ7: Route
