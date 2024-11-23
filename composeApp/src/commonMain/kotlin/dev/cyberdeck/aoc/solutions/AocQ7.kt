@@ -1,9 +1,9 @@
 package dev.cyberdeck.aoc.solutions
 
-import adventofcode.composeapp.generated.resources.Res
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -24,19 +24,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-fun AocQ7() = AocScaffold(problem = 7) {
+fun AocQ7() = AocScaffold(problem = 7) { innerPadding, input ->
     var solution by remember { mutableStateOf(emptyList<Pair<String, String>>()) }
     var part2 by remember { mutableStateOf(false) }
     val progressDelay = 50.milliseconds
 
     LaunchedEffect(part2) {
         withContext(getPlatform().background) {
-            val lines = Res.readBytes("files/q7.txt").decodeToString().split("\n")
+            val lines = input.split("\n")
             solution = emptyList()
             val solver = if (part2) {
                 solveQ7p2(lines)
@@ -52,7 +50,7 @@ fun AocQ7() = AocScaffold(problem = 7) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(innerPadding)
     ) {
         Row {
             Checkbox(

@@ -1,4 +1,6 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.internal.utils.getLocalProperty
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -10,6 +12,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     kotlin("plugin.serialization") version "2.0.21"
+    id("com.codingfeline.buildkonfig") version "0.15.2"
 }
 
 kotlin {
@@ -19,7 +22,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -59,6 +62,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.cio)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -69,16 +73,21 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-
+            implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.ktor.client.core)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.ktor.client.cio)
         }
         wasmJsMain.dependencies {
             implementation(npm("crypto-js", "4.2.0"))
+            implementation(libs.ktor.client.js)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
@@ -110,6 +119,14 @@ android {
     }
 }
 
+buildkonfig {
+    packageName = "dev.cyberdeck.aoc"
+
+    defaultConfigs {
+        buildConfigField(STRING, "AOC_COOKIE", project.getLocalProperty("aoc.cookie"))
+    }
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
 }
@@ -129,4 +146,10 @@ compose.desktop {
 compose.resources {
     publicResClass = true
     generateResClass = auto
+}
+
+buildscript {
+    dependencies {
+        classpath(libs.buildkonfig.gradle.plugin)
+    }
 }

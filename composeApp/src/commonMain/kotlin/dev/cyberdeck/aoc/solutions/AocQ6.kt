@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -37,15 +38,14 @@ import kotlin.time.DurationUnit
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun AocQ6() = AocScaffold(problem = 6) {
+fun AocQ6() = AocScaffold(problem = 6) { innerPadding, input ->
     var solution by remember { mutableStateOf("" to emptyList<String>()) }
     var part2 by remember { mutableStateOf(false) }
     val progressDelay = 50.milliseconds
 
     LaunchedEffect(part2) {
         withContext(getPlatform().background) {
-            val lines = Res.readBytes("files/q6.txt").decodeToString().split("\n")
-            println("read ${lines.size} lines")
+            val lines = input.split("\n")
 
             val histo = Array(lines.first().length) { mutableMapOf<Char, Int>() }
 
@@ -82,7 +82,7 @@ fun AocQ6() = AocScaffold(problem = 6) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().padding(innerPadding)
         ) {
             Row {
                 Checkbox(

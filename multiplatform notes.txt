@@ -3,6 +3,8 @@ multiplatform notes:
 - iOS kinda painful, but maybe if regularly developing with XCode you wouldn't hit it 
 - unicode strings mangled on web
 - 20-30GB of shit to download: gradle, xcode, dependencies, simulators, etc.
+  - ktor alone was literally 400+ jars
+
 - String.format and other foundational stdlib just missing, lol
 - can call Kotlin from Swift, works with a horrific Obj-C header?
 - the other way is horrific unless you're calling some well-known set of swift built-ins
@@ -14,9 +16,10 @@ multiplatform notes:
 - don't get string resources out of the box... annoying, but just create strings.xml
   - actually all resource types are much more annoying to deal with than their android equivalents
   
+- no retrofit, or you have to abstract over platform-specific REST client to use on Android
 - easy to end up duplicating code between android and desktop (both java-based)
  - maybe you can setup a module to be shared by both, but... extra complexity
-- 
+- no buildconfig, ugh
 
 issues:
 

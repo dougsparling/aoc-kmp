@@ -1,9 +1,13 @@
 package dev.cyberdeck.aoc.solutions
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -18,16 +22,28 @@ import androidx.compose.material.Typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontFamily
+import dev.cyberdeck.aoc.BuildKonfig
 import dev.cyberdeck.aoc.LocalNav
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.request.headers
+import io.ktor.client.statement.bodyAsBytes
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.utils.io.core.use
 
 enum class Theme { Default, L33T }
 
@@ -36,10 +52,28 @@ fun AocScaffold(
     problem: Int,
     defaultTheme: Theme = Theme.Default,
     extraActions: @Composable RowScope.() -> Unit = {},
-    content: @Composable (innerPadding: PaddingValues) -> Unit
+    content: @Composable (innerPadding: PaddingValues, input: String) -> Unit
 ) {
     val nav = LocalNav.current
     var theme by remember { mutableStateOf(defaultTheme) }
+    var puzzleInput by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(problem) {
+        val client = HttpClient {
+            expectSuccess = true
+        }
+        client.use {
+            val res = client.get("https://adventofcode.com/2016/day/$problem/input") {
+                headers {
+                    append(HttpHeaders.Cookie, "session=${BuildKonfig.AOC_COOKIE}")
+                }
+            }
+
+            if (res.status == HttpStatusCode.OK) {
+                puzzleInput = res.bodyAsBytes().decodeToString().trim()
+            }
+        }
+    }
 
     ThemedContent(theme = theme) {
         Scaffold(
@@ -62,10 +96,23 @@ fun AocScaffold(
                     actions = {
                         extraActions()
                         ThemeSwitcher { theme = it }
+                        ProblemDescription(problem = problem)
                     }
                 )
             },
-            content = content
+            content = { innerPadding ->
+                val input = puzzleInput
+                if (input != null) {
+                    content(innerPadding, input)
+                } else {
+                    Box(
+                        modifier = Modifier.padding(innerPadding).fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
         )
     }
 }
@@ -136,6 +183,21 @@ private fun ThemeSwitcher(
             )
         }
     }
+}
+
+@Composable
+private fun ProblemDescription(problem: Int) {
+    val uriHandler = LocalUriHandler.current
+
+    IconButton(onClick = {
+        uriHandler.openUri("https://adventofcode.com/2016/day/$problem")
+    }) {
+        Icon(
+            imageVector = Icons.Filled.Info,
+            contentDescription = "get problem description"
+        )
+    }
+
 }
 
 @Composable

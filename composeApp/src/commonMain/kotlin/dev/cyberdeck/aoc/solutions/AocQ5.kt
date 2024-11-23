@@ -52,7 +52,7 @@ fun AocQ5() {
         extraActions = {
             var showingLengthDialog by remember { mutableStateOf(false) }
             IconButton(onClick = { showingLengthDialog = true }) {
-                Text("🍆")
+                Text("📏")
             }
 
             var showingDifficultyDialog by remember { mutableStateOf(false) }
@@ -86,9 +86,9 @@ fun AocQ5() {
                 )
             }
         }
-    ) { padding ->
-        var entry by remember { mutableStateOf("") }
-        var doorId by remember { mutableStateOf("") }
+    ) { padding, input ->
+        var entry by remember { mutableStateOf(input) }
+        var doorId by remember(input) { mutableStateOf("") }
         var solution by remember { mutableStateOf("") }
 
         var log by remember { mutableStateOf(listOf<String>()) }
