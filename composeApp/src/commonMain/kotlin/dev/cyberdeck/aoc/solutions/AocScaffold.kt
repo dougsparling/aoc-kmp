@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontFamily
 import dev.cyberdeck.aoc.BuildKonfig
 import dev.cyberdeck.aoc.LocalNav
+import dev.cyberdeck.aoc.getPlatform
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
@@ -59,18 +60,30 @@ fun AocScaffold(
     var puzzleInput by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(problem) {
+        if (getPlatform().httpClientIsTrash) {
+            puzzleInput = ""
+            return@LaunchedEffect
+        }
+
         val client = HttpClient {
             expectSuccess = true
         }
         client.use {
-            val res = client.get("https://adventofcode.com/2016/day/$problem/input") {
-                headers {
-                    append(HttpHeaders.Cookie, "session=${BuildKonfig.AOC_COOKIE}")
+            val res = runCatching {
+                client.get("https://adventofcode.com/2016/day/$problem/input") {
+                    headers {
+                        append(HttpHeaders.Cookie, "session=${BuildKonfig.AOC_COOKIE}")
+                    }
                 }
             }
 
-            if (res.status == HttpStatusCode.OK) {
-                puzzleInput = res.bodyAsBytes().decodeToString().trim()
+            res.onSuccess {
+                if (it.status == HttpStatusCode.OK) {
+                    puzzleInput = res.getOrThrow().bodyAsBytes().decodeToString().trim()
+                }
+            }
+            res.onFailure {
+                puzzleInput = ""
             }
         }
     }

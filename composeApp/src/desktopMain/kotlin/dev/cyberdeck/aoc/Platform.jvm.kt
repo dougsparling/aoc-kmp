@@ -13,6 +13,7 @@ class JVMPlatform: Platform {
     override val name: String = "Java ${System.getProperty("java.version")}"
     override val background: CoroutineContext = singleThread
     override fun md5(input: String) = md5.digest(input.toByteArray()).hex()
+    override val httpClientIsTrash: Boolean get() = false
 }
 
 actual fun getPlatform(): Platform = JVMPlatform()

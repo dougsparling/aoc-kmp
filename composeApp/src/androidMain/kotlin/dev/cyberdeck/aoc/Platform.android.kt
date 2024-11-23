@@ -12,6 +12,7 @@ class AndroidPlatform : Platform {
     override val name: String = "Android ${Build.VERSION.SDK_INT}"
     override val background: CoroutineContext get() = Dispatchers.IO
     override fun md5(input: String) = md5.digest(input.toByteArray()).hex()
+    override val httpClientIsTrash: Boolean get() = false
 }
 
 actual fun getPlatform(): Platform = AndroidPlatform()
